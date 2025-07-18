@@ -8,12 +8,20 @@ const profileRouter = require("./routes/profile.js");
 const requestRouter = require("./routes/request.js");
 const userRouter = require("./routes/user.js");
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://dev-tinder-web-frontend-three.vercel.app",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173", // local
-      "https://dev-tinder-web-frontend-three.vercel.app", // vercel
-    ],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS: " + origin));
+      }
+    },
     credentials: true,
   })
 );
