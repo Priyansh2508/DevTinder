@@ -8,15 +8,10 @@ const jwt = require("jsonwebtoken");
 authRouter.post("/signup",async (req, res)=> {
    try{
      //validation of data
-    
-     
      validateSignUpData(req);
-   
      // Encrypt passwords
      const {firstName,lastName, emailId,password}=req.body;
      const passwordHash= await bcrypt.hash(password,10);
-
-
     // Creating a new instance of the user
     const user =await User.create ({
       firstName,lastName, emailId,password: passwordHash
@@ -70,9 +65,11 @@ authRouter.post("/login", async (req, res) => {
       sameSite: isProd ? "None" : "Lax",
       expires: new Date(Date.now() + 8 * 3600000),
     });
+    console.log("login")
 
     return res.json({message:"Logged in!!", user});
   } catch (err) {
+    console.log("login failed");
     return res.status(400).send("ERROR: " + err.message);
   }
 });
