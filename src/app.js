@@ -9,6 +9,8 @@ const authRouter = require("./routes/auth.js");
 const profileRouter = require("./routes/profile.js");
 const requestRouter = require("./routes/request.js");
 const userRouter = require("./routes/user.js");
+const paymentRouter = require('./routes/payment.js');
+require("./utils/cronjob.js");
 
 app.use(cors({
   origin: "http://localhost:5173",
@@ -27,6 +29,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/request", requestRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/payment", paymentRouter);
 
 connectDB()
   .then(() => {
