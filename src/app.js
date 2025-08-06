@@ -17,7 +17,12 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
+app.use(express.json({
+  verify: (req, res, buf) => {
+    // Save the raw body as a string on the request object
+    req.rawBody = buf.toString();
+  }
+}));
 app.use(cookieParser());
 
 // ✅ Add this test route before DB connection
