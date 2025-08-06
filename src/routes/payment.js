@@ -67,18 +67,17 @@ paymentRouter.post("/webhook", async (req, res) => {
 
        //update my payment status in db
        const paymentDetails = req.body.payload.payment.entity;
-       console.log(paymentDetails);
+      
        const payment = await Payment.findOne({orderId: paymentDetails.order_id});
-       console.log(payment);
+    
        payment.status = paymentDetails.status;
        await payment.save();
-       console.log("payment saved");
+       
        const user = await User.findOne({_id: payment.userId});
 
        user.isPremium = true;
        user.membershipType = payment.notes.membershipType;
        await user.save();
-       console.log("user saved");
 
        //return success response to razorpay 
 
@@ -95,4 +94,12 @@ paymentRouter.post("/webhook", async (req, res) => {
     }
 })
 
+paymentRouter.get("/premium/verify", userAuth, async (req, res)=>{
+    const user = req.user;
+
+    if(user.isPremium){
+        return res.json({isPremium: true});
+    }
+    return res.json({isPremium: false});
+})
 module.exports = paymentRouter;
