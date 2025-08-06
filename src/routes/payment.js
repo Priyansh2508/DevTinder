@@ -9,22 +9,8 @@ const {validateWebhookSignature} = require('razorpay/dist/utils/razorpay-utils')
 
 paymentRouter.post("/create", userAuth,  async(req, res)=>{
     try {
-
-        // --- DEBUGGING LOG ---
-        console.log("User object from middleware:", req.user);
-        if (!req.user) {
-            return res.status(401).json({ msg: "Authentication error, user not found." });
-        }
-        // -------------------
-
         const {membershipType} = req.body;
         const {firstName, lastName, emailId} = req.user;
-
-                // --- DEBUGGING LOGS ---
-        console.log("Received membershipType:", membershipType);
-        const amount = membershipAmount[membershipType] * 100;
-        console.log("Calculated amount:", amount);
-        // -----------------------
 
 
         const order = await razorpayInstance.orders.create({
@@ -62,8 +48,6 @@ paymentRouter.post("/create", userAuth,  async(req, res)=>{
     console.error(error); 
     console.error("-------------------------------");
     
-    // Also, send a more detailed error message to the frontend if possible
-    // Razorpay errors often have a 'description' field
     const errorMessage = error.description || error.message;
     return res.status(500).json({ msg: "Server error during payment creation.", error: errorMessage });
 }
@@ -74,6 +58,7 @@ paymentRouter.post("/webhook", async (req, res) => {
 
        const webhookSignature = req.get("X-Razorpay-Signature");
        const isWebhookValid = validateWebhookSignature(req.rawBody, webhookSignature, process.env.RAZORPAY_WEBHOOK_SECRET);
+       console.log(isWebhookValid);
 
        if(!isWebhookValid){
         return res.status(400).json({msg: "Webhook signature is invalid"});
@@ -85,13 +70,13 @@ paymentRouter.post("/webhook", async (req, res) => {
        const payment = await Payment.findOne({orderId: paymentDetails.orderId});
        payment.status = paymentDetails.status;
        await payment.save();
-
+       console.log("payment saved");
        const user = await User.findOne({_id: payment.userId});
 
        user.isPremium = true;
        user.membershipType = payment.notes.membershipType;
        await user.save();
-
+       console.log("user saved");
 
        //return success response to razorpay 
 
