@@ -25,7 +25,7 @@ paymentRouter.post("/create", userAuth,  async(req, res)=>{
              },
             })
              //save it in my database
-             console.log(order);
+    
              
              const payment = new Payment({
                 userId: req.user._id,
@@ -57,9 +57,9 @@ paymentRouter.post("/webhook", async (req, res) => {
     try {
 
        const webhookSignature = req.get("X-Razorpay-Signature");
-       console.log(webhookSignature);
+     
        const isWebhookValid = validateWebhookSignature(req.rawBody, webhookSignature, process.env.RAZORPAY_WEBHOOK_SECRET);
-       console.log(isWebhookValid);
+       
 
        if(!isWebhookValid){
         return res.status(400).json({msg: "Webhook signature is invalid"});
@@ -95,7 +95,7 @@ paymentRouter.post("/webhook", async (req, res) => {
 })
 
 paymentRouter.get("/premium/verify", userAuth, async (req, res)=>{
-    const user = req.user;
+    const user = req.user.toJSON();
 
     if(user.isPremium){
         return res.json({isPremium: true});

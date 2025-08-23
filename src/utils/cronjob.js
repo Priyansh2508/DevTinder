@@ -25,13 +25,13 @@ cron.schedule("12 16 * * *",async  ()=>{
 
     const listOfEmails = [...new Set(pendingRequests.map(req => req.toUserId.emailId))];
 
-    console.log(listOfEmails);
+
 
     for(const email of listOfEmails){
 
         try {
             const res = await sendEmail.run();
-            console.log(res);
+           
         } catch (error) {
             console.log(error);
         }

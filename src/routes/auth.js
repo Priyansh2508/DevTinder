@@ -18,7 +18,7 @@ authRouter.post("/signup",async (req, res)=> {
     });
   const token = jwt.sign({ _id: user._id },process.env.JWT_SECRET);
 
-    const isProd = process.env.NODE_ENV === "production";
+  const isProd = process.env.NODE_ENV === "production";
 
  res.cookie("token", token, {
   httpOnly: true,
@@ -65,11 +65,10 @@ authRouter.post("/login", async (req, res) => {
       sameSite: isProd ? "None" : "Lax",
       expires: new Date(Date.now() + 8 * 3600000),
     });
-    console.log("login")
+
 
     return res.json({message:"Logged in!!", user});
   } catch (err) {
-    console.log("login failed");
     return res.status(400).send("ERROR: " + err.message);
   }
 });

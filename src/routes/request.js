@@ -48,7 +48,7 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res) =
   const data= await connectionRequest.save();
 
   const emailRes = await sendEmail.run({ message: `You got a new friend request: ${req.user.firstName} marked ${toUser.firstName} as ${status}` });
-  console.log(emailRes);
+ 
 
   res.json({
     message:req.user.firstName +  " marked " + toUser.firstName +" as "+ status,

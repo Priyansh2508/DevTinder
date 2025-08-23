@@ -38,7 +38,7 @@ userRouter.get("/user/connections",userAuth, async(req,res)=>{
             ]
         }).populate("fromUserId",USER_SAFE_DATA).populate("toUserId",USER_SAFE_DATA);
 
-        console.log(connectionRequests);
+        
 
        const data = connectionRequests.map((row) => {
     if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
@@ -88,7 +88,7 @@ userRouter.get("/feed",userAuth, async(req,res)=>{
             hideUsersfromFeed.add(req.fromUserId.toString());
              hideUsersfromFeed.add(req.toUserId.toString())
         });
-        console.log(hideUsersfromFeed);
+      
 
         const users = await User.find({
             $and:[{_id:{$nin: Array.from(hideUsersfromFeed)},},{_id:{$ne:loggedInUser._id}}]
@@ -96,7 +96,7 @@ userRouter.get("/feed",userAuth, async(req,res)=>{
 
         res.send({data: users});
     } catch (err) {
-        console.log("feed api fails");
+      
         res.status(400).json({message:err.message + "please login"})
     }
 })

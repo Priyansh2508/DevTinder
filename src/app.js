@@ -10,7 +10,11 @@ const profileRouter = require("./routes/profile.js");
 const requestRouter = require("./routes/request.js");
 const userRouter = require("./routes/user.js");
 const paymentRouter = require('./routes/payment.js');
+const http = require("http");
+const initializeSocket = require('./utils/socket.js');
+const chatRouter = require('./routes/chat.js');
 require("./utils/cronjob.js");
+
 
 app.use(cors({
   origin: "http://localhost:5173",
@@ -35,11 +39,16 @@ app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/request", requestRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/payment", paymentRouter);
+app.use("/api/v1/chat", chatRouter);
+
+
+const server = http.createServer(app);
+initializeSocket(server);
 
 connectDB()
   .then(() => {
     console.log("✅ MongoDB connection established");
-    app.listen(3000, () => {
+    server.listen(3000, () => {
       console.log("Server is listening on port 3000....");
     });
   })
